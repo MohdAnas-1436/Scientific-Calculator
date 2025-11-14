@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anas's Scientific Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .calculator {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 25px;
+            padding: 30px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .display {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            min-height: 100px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: flex-end;
+        }
+
+        .expression {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 16px;
+            margin-bottom: 10px;
+            word-break: break-all;
+            text-align: right;
+        }
+
+        .result {
+            color: white;
+            font-size: 36px;
+            font-weight: 600;
+            word-break: break-all;
+            text-align: right;
+        }
+
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 10px;
+        }
+
+        button {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            font-size: 18px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .operator {
+            background: rgba(255, 107, 107, 0.3);
+            border-color: rgba(255, 107, 107, 0.5);
+        }
+
+        .operator:hover {
+            background: rgba(255, 107, 107, 0.5);
+        }
+
+        .function {
+            background: rgba(72, 219, 251, 0.3);
+            border-color: rgba(72, 219, 251, 0.5);
+            font-size: 14px;
+        }
+
+        .function:hover {
+            background: rgba(72, 219, 251, 0.5);
+        }
+
+        .equals {
+            background: rgba(34, 197, 94, 0.4);
+            border-color: rgba(34, 197, 94, 0.6);
+            grid-column: span 2;
+        }
+
+        .equals:hover {
+            background: rgba(34, 197, 94, 0.6);
+        }
+
+        .clear {
+            background: rgba(239, 68, 68, 0.4);
+            border-color: rgba(239, 68, 68, 0.6);
+        }
+
+        .clear:hover {
+            background: rgba(239, 68, 68, 0.6);
+        }
+
+        .zero {
+            grid-column: span 2;
+        }
+        .banner {
+            grid-column: span 10;
+            background: transparent;
+            border: none;
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.7);
+            cursor: default;
+            box-shadow: none;
+            padding-top: 100px;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <div class="display">
+            <div class="expression" id="expression"></div>
+            <div class="result" id="result">0</div>
+        </div>
+        <div class="buttons">
+            <button class="clear" onclick="clearDisplay()">C</button>
+            <button class="clear" onclick="backspace()">⌫</button>
+            <button class="function" onclick="appendToDisplay('(')">(</button>
+            <button class="function" onclick="appendToDisplay(')')">)</button>
+            <button class="operator" onclick="appendToDisplay('/')">÷</button>
+            <button class="function" onclick="calculateFunction('sqrt')">√</button>
+            
+            <button class="function" onclick="calculateFunction('sin')">sin</button>
+            <button class="function" onclick="calculateFunction('cos')">cos</button>
+            <button class="function" onclick="calculateFunction('tan')">tan</button>
+            <button class="function" onclick="calculateFunction('asin')">sin⁻¹</button>
+            <button class="function" onclick="calculateFunction('acos')">cos⁻¹</button>
+            <button class="function" onclick="calculateFunction('atan')">tan⁻¹</button>
+            
+            <button class="function" onclick="calculateFunction('sinh')">sinh</button>
+            <button class="function" onclick="calculateFunction('cosh')">cosh</button>
+            <button class="function" onclick="calculateFunction('tanh')">tanh</button>
+            <button class="operator" onclick="appendToDisplay('*')">×</button>
+            <button class="function" onclick="calculateFunction('pow')">x²</button>
+            <button class="function" onclick="calculateFunction('cube')">x³</button>
+            
+            <button onclick="appendToDisplay('7')">7</button>
+            <button onclick="appendToDisplay('8')">8</button>
+            <button onclick="appendToDisplay('9')">9</button>
+            <button class="operator" onclick="appendToDisplay('-')">−</button>
+            <button class="function" onclick="calculateFunction('ln')">ln</button>
+            <button class="function" onclick="calculateFunction('exp')">eˣ</button>
+            
+            <button onclick="appendToDisplay('4')">4</button>
+            <button onclick="appendToDisplay('5')">5</button>
+            <button onclick="appendToDisplay('6')">6</button>
+            <button class="operator" onclick="appendToDisplay('+')">+</button>
+            <button class="function" onclick="calculateFunction('log')">log</button>
+            <button class="function" onclick="calculateFunction('pow10')">10ˣ</button>
+            
+            <button onclick="appendToDisplay('1')">1</button>
+            <button onclick="appendToDisplay('2')">2</button>
+            <button onclick="appendToDisplay('3')">3</button>
+            <button class="function" onclick="calculateFunction('inverse')">1/x</button>
+            <button class="function" onclick="calculateFunction('factorial')">x!</button>
+            <button class="function" onclick="calculateFunction('abs')">|x|</button>
+            
+            <button onclick="appendToDisplay('0')">0</button>
+            <button onclick="appendToDisplay('.')">.</button>
+            <button class="function" onclick="appendToDisplay('Math.PI')">π</button>
+            <button class="function" onclick="appendToDisplay('Math.E')">e</button>
+            <button class="function" onclick="calculateFunction('percent')">%</button>
+            <button class="equals" onclick="calculate()">=</button>
+            <button class="Banner">ANAS'S CALCULATOR</button>
+        </div>
+    </div>
+
+    <script>
+        let expression = '';
+        let result = '0';
+
+        function updateDisplay() {
+            document.getElementById('expression').textContent = expression || '';
+            document.getElementById('result').textContent = result;
+        }
+
+        function appendToDisplay(value) {
+            if (result !== '0' && expression === '') {
+                expression = result;
+            }
+            expression += value;
+            updateDisplay();
+        }
+
+        function clearDisplay() {
+            expression = '';
+            result = '0';
+            updateDisplay();
+        }
+
+        function backspace() {
+            if (expression.length > 0) {
+                expression = expression.slice(0, -1);
+                updateDisplay();
+            }
+        }
+
+        function calculate() {
+            try {
+                if (expression === '') return;
+                
+                let evalExpression = expression
+                    .replace(/×/g, '*')
+                    .replace(/÷/g, '/')
+                    .replace(/−/g, '-');
+                
+                result = eval(evalExpression).toString();
+                
+                if (result.includes('.')) {
+                    result = parseFloat(result).toFixed(8).replace(/\.?0+$/, '');
+                }
+                
+                expression = '';
+                updateDisplay();
+            } catch (error) {
+                result = 'Error';
+                updateDisplay();
+            }
+        }
+
+        function calculateFunction(func) {
+            try {
+                let currentValue = result !== '0' ? parseFloat(result) : 0;
+                
+                switch(func) {
+                    case 'sin':
+                        result = Math.sin(currentValue).toString();
+                        break;
+                    case 'cos':
+                        result = Math.cos(currentValue).toString();
+                        break;
+                    case 'tan':
+                        result = Math.tan(currentValue).toString();
+                        break;
+                    case 'asin':
+                        result = Math.asin(currentValue).toString();
+                        break;
+                    case 'acos':
+                        result = Math.acos(currentValue).toString();
+                        break;
+                    case 'atan':
+                        result = Math.atan(currentValue).toString();
+                        break;
+                    case 'sinh':
+                        result = Math.sinh(currentValue).toString();
+                        break;
+                    case 'cosh':
+                        result = Math.cosh(currentValue).toString();
+                        break;
+                    case 'tanh':
+                        result = Math.tanh(currentValue).toString();
+                        break;
+                    case 'sqrt':
+                        result = Math.sqrt(currentValue).toString();
+                        break;
+                    case 'pow':
+                        result = Math.pow(currentValue, 2).toString();
+                        break;
+                    case 'cube':
+                        result = Math.pow(currentValue, 3).toString();
+                        break;
+                    case 'ln':
+                        result = Math.log(currentValue).toString();
+                        break;
+                    case 'log':
+                        result = Math.log10(currentValue).toString();
+                        break;
+                    case 'exp':
+                        result = Math.exp(currentValue).toString();
+                        break;
+                    case 'pow10':
+                        result = Math.pow(10, currentValue).toString();
+                        break;
+                    case 'inverse':
+                        result = (1 / currentValue).toString();
+                        break;
+                    case 'factorial':
+                        result = factorial(currentValue).toString();
+                        break;
+                    case 'abs':
+                        result = Math.abs(currentValue).toString();
+                        break;
+                    case 'percent':
+                        result = (currentValue / 100).toString();
+                        break;
+                }
+                
+                if (result.includes('.')) {
+                    result = parseFloat(result).toFixed(8).replace(/\.?0+$/, '');
+                }
+                
+                expression = '';
+                updateDisplay();
+            } catch (error) {
+                result = 'Error';
+                updateDisplay();
+            }
+        }
+
+        function factorial(n) {
+            if (n < 0) return NaN;
+            if (n === 0 || n === 1) return 1;
+            if (n > 170) return Infinity;
+            let result = 1;
+            for (let i = 2; i <= n; i++) {
+                result *= i;
+            }
+            return result;
+        }
+
+        updateDisplay();
+    </script>
+</body>
+</html>
